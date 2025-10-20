@@ -259,33 +259,31 @@ class VenusDashboard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  _buildMetricCard('304', 'New Applicant', Icons.person_add_alt_1, const Color(0xFF1E88E5), constraints.maxWidth),
-                  _buildMetricCard('2', 'Waiting Agency Review', Icons.assignment, const Color(0xFF5E35B1), constraints.maxWidth),
-                  _buildMetricCard('2', 'Waiting FPO Review', Icons.rate_review, const Color(0xFF00897B), constraints.maxWidth),
-                  _buildMetricCard('2', 'Selection Checklist', Icons.checklist_rtl, const Color(0xFF43A047), constraints.maxWidth),
-                  _buildMetricCard('21', 'Waiting MCU Result', Icons.health_and_safety, const Color(0xFF3949AB), constraints.maxWidth),
-                  _buildMetricCard('2,961', 'Accepted', Icons.verified, const Color(0xFF43A047), constraints.maxWidth),
-                  _buildMetricCard('7,196', 'Expired Certificates', Icons.error_outline, const Color(0xFFFB8C00), constraints.maxWidth),
-                  _buildMetricCard('2,627', 'Expired Documents', Icons.folder_off, const Color(0xFFE53935), constraints.maxWidth),
-                ],
-              );
-            },
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.95, // Disesuaikan agar lebih proporsional
+            children: [
+              _buildMetricCard('304', 'New Applicant', Icons.person_add_alt_1, const Color(0xFF1E88E5)),
+              _buildMetricCard('2', 'Waiting Agency Review', Icons.assignment, const Color(0xFF5E35B1)),
+              _buildMetricCard('2', 'Waiting FPO Review', Icons.rate_review, const Color(0xFF00897B)),
+              _buildMetricCard('2', 'Selection Checklist', Icons.checklist_rtl, const Color(0xFF43A047)),
+              _buildMetricCard('21', 'Waiting MCU Result', Icons.health_and_safety, const Color(0xFF3949AB)),
+              _buildMetricCard('2,961', 'Accepted', Icons.verified, const Color(0xFF43A047)),
+              _buildMetricCard('7,196', 'Expired Certificates', Icons.error_outline, const Color(0xFFFB8C00)),
+              _buildMetricCard('2,627', 'Expired Documents', Icons.folder_off, const Color(0xFFE53935)),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMetricCard(String value, String label, IconData icon, Color color, double maxWidth) {
-    final cardWidth = (maxWidth - 24) / 2;
+  Widget _buildMetricCard(String value, String label, IconData icon, Color color) {
     return Container(
-      width: cardWidth,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -299,7 +297,7 @@ class VenusDashboard extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(12),
@@ -307,25 +305,29 @@ class VenusDashboard extends StatelessWidget {
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, color: color, size: 28),
           ),
           const SizedBox(height: 16),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[900],
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[900],
+              ),
             ),
           ),
           const SizedBox(height: 6),
           Text(
             label,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               color: Colors.grey[600],
               height: 1.3,
             ),
+            textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
