@@ -113,14 +113,14 @@ class VenusDashboard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(20), // Kurangi padding
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10), // Kurangi padding
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
@@ -128,10 +128,10 @@ class VenusDashboard extends StatelessWidget {
                 child: const Icon(
                   Icons.waving_hand,
                   color: Colors.amber,
-                  size: 28,
+                  size: 24, // Kurangi size
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,40 +140,44 @@ class VenusDashboard extends StatelessWidget {
                       'Welcome back,',
                       style: TextStyle(
                         color: Colors.white70,
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     const Text(
                       'Christian Indrayana',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 20, // Kurangi dari 24
                         fontWeight: FontWeight.bold,
                         height: 1.2,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             'Here\'s what\'s happening with your crew management today',
             style: TextStyle(
               color: Colors.white.withOpacity(0.8),
-              fontSize: 14,
+              fontSize: 13,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Row(
             children: [
               _buildStatCard('3,277', 'Total Crew', Icons.groups),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               _buildStatCard('1,723', 'On Schedule', Icons.schedule),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               _buildStatCard('2,573', 'Active', Icons.check_circle),
             ],
           ),
@@ -185,23 +189,28 @@ class VenusDashboard extends StatelessWidget {
   Widget _buildStatCard(String value, String label, IconData icon) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.15),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: Colors.white.withOpacity(0.3)),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center, // Center alignment
           children: [
-            Icon(icon, color: Colors.white, size: 24),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            Icon(icon, color: Colors.white, size: 20),
+            const SizedBox(height: 8),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18, // Kurangi dari 24
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 4),
@@ -209,9 +218,12 @@ class VenusDashboard extends StatelessWidget {
               label,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.8),
-                fontSize: 12,
+                fontSize: 10, // Kurangi dari 12
                 fontWeight: FontWeight.w500,
               ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
