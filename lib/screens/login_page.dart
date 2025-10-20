@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Image.asset(
         'assets/images/pertamina_logo.png',
-        height: 180,
+        height: 120,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           // Fallback jika gambar tidak ditemukan
@@ -146,63 +146,101 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   Widget _buildTitle() {
     return Column(
       children: [
-        // Venus App Badge
+        // Venus App Badge with enhanced design
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF7B68EE), Color(0xFF6A5ACD)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF1976D2), // Blue matching theme
+                Color(0xFF1565C0),
+                Color(0xFF0D47A1),
+              ],
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF7B68EE).withOpacity(0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                color: const Color(0xFF1976D2).withOpacity(0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+                spreadRadius: 1,
+              ),
+              BoxShadow(
+                color: Colors.white.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, -2),
               ),
             ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
-
-              Text(
-                'VENUS',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
+            children: [
+              const SizedBox(width: 12),
+              // Venus Text with enhanced styling
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Colors.white, Color(0xFFE3F2FD)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ).createShader(bounds),
+                child: const Text(
+                  'VENUS',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 3,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
 
-        // Subtitle
-        const Text(
-          'Crew Management System',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF1565C0),
+        // Subtitle with enhanced styling
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1976D2).withOpacity(0.08),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Text(
+            'Crew Management System',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1565C0),
+              letterSpacing: 0.5,
+            ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
 
         // Description
         Text(
           'Sign in to start your session',
           style: TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
             color: Colors.grey[600],
+            letterSpacing: 0.3,
           ),
         ),
       ],
     );
   }
+
 
   Widget _buildIdamanSSOButton() {
     return Container(
