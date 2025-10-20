@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_card.dart';
+import 'venus/dashboard_venus.dart';
 
 class PortalPage extends StatelessWidget {
   const PortalPage({Key? key}) : super(key: key);
@@ -7,10 +8,11 @@ class PortalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 2,
-        shadowColor: Colors.black.withOpacity(0.1),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
         title: Row(
@@ -75,17 +77,16 @@ class PortalPage extends StatelessWidget {
                 if (value == 'logout') {
                   Navigator.pushReplacementNamed(context, '/login');
                 } else if (value == 'profile') {
-                  // Navigate to profile page
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Profile page coming soon')),
                   );
                 }
               },
               itemBuilder: (BuildContext context) => [
-                PopupMenuItem<String>(
+                const PopupMenuItem<String>(
                   value: 'profile',
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(Icons.person_outline, color: Color(0xFF1976D2), size: 22),
                       SizedBox(width: 12),
                       Text(
@@ -99,10 +100,10 @@ class PortalPage extends StatelessWidget {
                   ),
                 ),
                 const PopupMenuDivider(),
-                PopupMenuItem<String>(
+                const PopupMenuItem<String>(
                   value: 'logout',
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(Icons.logout, color: Colors.red, size: 22),
                       SizedBox(width: 12),
                       Text(
@@ -136,55 +137,43 @@ class PortalPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF1976D2).withOpacity(0.05),
-              Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 10),
+              const Text(
+                'Welcome to PIS\nManagement System',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1565C0),
+                  height: 1.3,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Select an application to continue',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 32),
+              _buildAppGrid(context),
+              const SizedBox(height: 20),
             ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                const Text(
-                  'Welcome to PIS\nManagement System',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1565C0),
-                    height: 1.3,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Select an application to continue',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _buildAppGrid(),
-                const SizedBox(height: 20),
-              ],
-            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildAppGrid() {
+  Widget _buildAppGrid(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -199,7 +188,12 @@ class PortalPage extends StatelessWidget {
           icon: Icons.people_alt_rounded,
           color: const Color(0xFF7B68EE),
           isAvailable: true,
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const VenusDashboard()),
+            );
+          },
         ),
         AppCard(
           title: 'WRH',
