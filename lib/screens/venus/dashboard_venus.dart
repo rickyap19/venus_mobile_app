@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pis_management_system/config/menu_config.dart';
+import 'package:pis_management_system/widgets/modern_menu_dropdown.dart';
 
 class VenusDashboard extends StatelessWidget {
   const VenusDashboard({Key? key}) : super(key: key);
@@ -7,73 +9,174 @@ class VenusDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        toolbarHeight: 72,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF7B68EE), Color(0xFF6A5ACD)],
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text(
-                'VENUS',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Dashboard',
-              style: TextStyle(
-                color: Colors.grey[800],
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.grey[700]),
-            onPressed: () {},
-          ),
-          Stack(
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications_outlined, color: Colors.grey[700]),
-                onPressed: () {},
-              ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFF5252),
-                    shape: BoxShape.circle,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(72),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  // Hamburger Menu Button dengan Dropdown
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.menu, color: Colors.black87, size: 24),
+                    tooltip: 'Menu',
+                    offset: const Offset(0, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'dashboard',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.dashboard_outlined, color: Color(0xFF1976D2)),
+                          title: Text('Portal', style: TextStyle(fontSize: 14)),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'recruitment',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.person_add_alt_1_rounded, color: Color(0xFF5E35B1)),
+                          title: const Text('Recruitment', style: TextStyle(fontSize: 14)),
+                          trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'manning',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.people_rounded, color: Color(0xFF00897B)),
+                          title: const Text('Manning', style: TextStyle(fontSize: 14)),
+                          trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'divider',
+                        enabled: false,
+                        child: Divider(height: 1),
+                      ),
+                      const PopupMenuItem(
+                        value: 'analytics',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.analytics_outlined, color: Color(0xFF1976D2)),
+                          title: Text('Analytics', style: TextStyle(fontSize: 14)),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'reports',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.assessment_outlined, color: Color(0xFFFB8C00)),
+                          title: Text('Reports', style: TextStyle(fontSize: 14)),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'divider2',
+                        enabled: false,
+                        child: Divider(height: 1),
+                      ),
+                      const PopupMenuItem(
+                        value: 'settings',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.settings_outlined, color: Color(0xFF757575)),
+                          title: Text('Settings', style: TextStyle(fontSize: 14)),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'logout',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.logout_outlined, color: Color(0xFFE53935)),
+                          title: Text('Logout', style: TextStyle(fontSize: 14)),
+                        ),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      // Handle navigation
+                      switch (value) {
+                        case 'dashboard':
+                          Navigator.pushNamed(context, '/portal');
+                          break;
+                        case 'recruitment':
+                          _showMenuBottomSheet(
+                            context,
+                            title: 'RECRUITMENT',
+                            icon: Icons.person_add_alt_1_rounded,
+                            sections: MenuConfig.getRecruitmentMenu(context),
+                            primaryColor: const Color(0xFF5E35B1),
+                            secondaryColor: const Color(0xFF4527A0),
+                          );
+                          break;
+                        case 'manning':
+                          _showMenuBottomSheet(
+                            context,
+                            title: 'MANNING',
+                            icon: Icons.people_rounded,
+                            sections: MenuConfig.getManningMenu(context),
+                            primaryColor: const Color(0xFF00897B),
+                            secondaryColor: const Color(0xFF00695C),
+                          );
+                          break;
+                        case 'analytics':
+                          Navigator.pushNamed(context, '/analytics');
+                          break;
+                        case 'reports':
+                          Navigator.pushNamed(context, '/reports');
+                          break;
+                        case 'settings':
+                          Navigator.pushNamed(context, '/settings');
+                          break;
+                        case 'logout':
+                          Navigator.pushNamed(context, '/login');
+                          break;
+                      }
+                    },
                   ),
-                ),
+                  const SizedBox(width: 12),
+
+                  // Logo & Title
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF7B68EE), Color(0xFF6A5ACD)],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'VENUS',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Dashboard',
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const Spacer(),
+                ],
               ),
-            ],
+            ),
           ),
-          const SizedBox(width: 8),
-        ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -92,6 +195,165 @@ class VenusDashboard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showMenuBottomSheet(
+      BuildContext context, {
+        required String title,
+        required IconData icon,
+        required List<MenuSection> sections,
+        required Color primaryColor,
+        required Color secondaryColor,
+      }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.75,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: Column(
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 8),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+
+            // Header dengan gradient
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [primaryColor, secondaryColor],
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+
+            // Menu Items dari MenuSection
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                itemCount: sections.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 32,
+                  thickness: 1,
+                  color: Colors.grey[200],
+                ),
+                itemBuilder: (context, index) {
+                  final section = sections[index];
+                  return _buildMenuSection(section);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _buildMenuSection(MenuSection section) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          child: Text(
+            section.title,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.0,
+            ),
+          ),
+        ),
+        ...section.items.map((item) => Builder(
+          builder: (BuildContext ctx) {
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(ctx);
+                  item.onTap?.call();
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: item.color.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(item.icon, color: item.color, size: 20),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          item.title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 14,
+                        color: Colors.grey[400],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        )),
+      ],
     );
   }
 
