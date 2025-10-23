@@ -6,6 +6,8 @@ import 'dart:math';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:pis_management_system/service/auth_service.dart';
+
 // Custom HTTP Client that allows self-signed certificates
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -264,9 +266,31 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       setState(() => _isLoading = false);
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        // Simpan token atau data user jika diperlukan
-        Navigator.pushReplacementNamed(context, '/portal');
+        final jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
+          final data = jsonResponse['data'];
+
+          // Simpan data login
+          await AuthService.saveLoginData(
+            token: data['token'] ?? '',
+            email: data['email'] ?? '',
+            fullName: data['fullName'] ?? '',
+            role: data['role'] ?? '',
+            expiresAt: data['expiresAt'] ?? '',
+          );
+
+          print('✅ Login successful - Role: ${data['role']}');
+
+          // Navigate ke portal
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, '/portal');
+          }
+        } else {
+          _showErrorDialog(jsonResponse['message'] ?? 'Login failed');
+          _generateCaptcha();
+          _captchaController.clear();
+        }
       } else {
         final error = json.decode(response.body);
         _showErrorDialog(error['message'] ?? 'Login failed');

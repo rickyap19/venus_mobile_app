@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pis_management_system/widgets/modern_menu_dropdown.dart';
 
-
-
 class MenuConfig {
-  // Manning Menu
+  // Manning Menu - Hanya untuk MA (Manning Agent)
   static List<MenuSection> getManningMenu(BuildContext context) {
     return [
       MenuSection(
@@ -74,7 +72,7 @@ class MenuConfig {
     ];
   }
 
-  // Recruitment Menu
+  // Recruitment Menu - Untuk MA (Manning Agent)
   static List<MenuSection> getRecruitmentMenu(BuildContext context) {
     return [
       MenuSection(
@@ -126,7 +124,26 @@ class MenuConfig {
     ];
   }
 
-  // Dashboard Menu (Optional)
+  // Personal Data Menu - Khusus untuk APPLICANT
+  static List<MenuSection> getPersonalDataMenu(BuildContext context) {
+    return [
+      MenuSection(
+        title: 'MY PROFILE',
+        items: [
+          MenuItem(
+            title: 'Personal Data',
+            icon: Icons.person_outline_rounded,
+            color: const Color(0xFF1E88E5),
+            onTap: () => Navigator.pushNamed(context, '/personal-info'),
+          ),
+
+        ],
+      ),
+
+    ];
+  }
+
+  // Dashboard Menu (Optional) - Untuk semua role
   static List<MenuSection> getDashboardMenu(BuildContext context) {
     return [
       MenuSection(
@@ -153,5 +170,35 @@ class MenuConfig {
         ],
       ),
     ];
+  }
+
+  // Get Menu berdasarkan Role
+  static List<MenuSection> getMenuByRole(BuildContext context, String role) {
+    switch (role.toUpperCase()) {
+      case 'APPLICANT':
+        return getPersonalDataMenu(context);
+      case 'MA': // Manning Agent
+        return getRecruitmentMenu(context) + getManningMenu(context);
+      default:
+        return []; // Atau menu default lainnya
+    }
+  }
+
+  // Check if menu should be shown based on role
+  static bool shouldShowMenu(String menuType, String role) {
+    role = role.toUpperCase();
+
+    switch (menuType) {
+      case 'recruitment':
+        return role == 'MA';
+      case 'manning':
+        return role == 'MA';
+      case 'personal_data':
+        return role == 'APPLICANT';
+      case 'dashboard':
+        return role == 'MA';
+      default:
+        return false;
+    }
   }
 }

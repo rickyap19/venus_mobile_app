@@ -1,12 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:pis_management_system/config/menu_config.dart';
+import 'package:pis_management_system/service/auth_service.dart';
 import 'package:pis_management_system/widgets/modern_menu_dropdown.dart';
 
-class VenusDashboard extends StatelessWidget {
+class VenusDashboard extends StatefulWidget {
   const VenusDashboard({Key? key}) : super(key: key);
 
   @override
+  State<VenusDashboard> createState() => _VenusDashboardState();
+}
+
+class _VenusDashboardState extends State<VenusDashboard> {
+  String _userRole = '';
+  String _userName = 'User';
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final userData = await AuthService.getUserData();
+    setState(() {
+      _userRole = userData['role'] ?? '';
+      _userName = userData['fullName'] ?? 'User';
+      _isLoading = false;
+    });
+    print('👤 User Role: $_userRole');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: PreferredSize(
@@ -21,128 +55,8 @@ class VenusDashboard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  // Hamburger Menu Button dengan Dropdown
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.menu, color: Colors.black87, size: 24),
-                    tooltip: 'Menu',
-                    offset: const Offset(0, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'dashboard',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.dashboard_outlined, color: Color(0xFF1976D2)),
-                          title: Text('Portal', style: TextStyle(fontSize: 14)),
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'recruitment',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.person_add_alt_1_rounded, color: Color(0xFF5E35B1)),
-                          title: const Text('Recruitment', style: TextStyle(fontSize: 14)),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'manning',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.people_rounded, color: Color(0xFF00897B)),
-                          title: const Text('Manning', style: TextStyle(fontSize: 14)),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'divider',
-                        enabled: false,
-                        child: Divider(height: 1),
-                      ),
-                      const PopupMenuItem(
-                        value: 'analytics',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.analytics_outlined, color: Color(0xFF1976D2)),
-                          title: Text('Analytics', style: TextStyle(fontSize: 14)),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'reports',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.assessment_outlined, color: Color(0xFFFB8C00)),
-                          title: Text('Reports', style: TextStyle(fontSize: 14)),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'divider2',
-                        enabled: false,
-                        child: Divider(height: 1),
-                      ),
-                      const PopupMenuItem(
-                        value: 'settings',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.settings_outlined, color: Color(0xFF757575)),
-                          title: Text('Settings', style: TextStyle(fontSize: 14)),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'logout',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.logout_outlined, color: Color(0xFFE53935)),
-                          title: Text('Logout', style: TextStyle(fontSize: 14)),
-                        ),
-                      ),
-                    ],
-                    onSelected: (value) {
-                      // Handle navigation
-                      switch (value) {
-                        case 'dashboard':
-                          Navigator.pushNamed(context, '/portal');
-                          break;
-                        case 'recruitment':
-                          _showMenuBottomSheet(
-                            context,
-                            title: 'RECRUITMENT',
-                            icon: Icons.person_add_alt_1_rounded,
-                            sections: MenuConfig.getRecruitmentMenu(context),
-                            primaryColor: const Color(0xFF5E35B1),
-                            secondaryColor: const Color(0xFF4527A0),
-                          );
-                          break;
-                        case 'manning':
-                          _showMenuBottomSheet(
-                            context,
-                            title: 'MANNING',
-                            icon: Icons.people_rounded,
-                            sections: MenuConfig.getManningMenu(context),
-                            primaryColor: const Color(0xFF00897B),
-                            secondaryColor: const Color(0xFF00695C),
-                          );
-                          break;
-                        case 'analytics':
-                          Navigator.pushNamed(context, '/analytics');
-                          break;
-                        case 'reports':
-                          Navigator.pushNamed(context, '/reports');
-                          break;
-                        case 'settings':
-                          Navigator.pushNamed(context, '/settings');
-                          break;
-                        case 'logout':
-                          Navigator.pushNamed(context, '/login');
-                          break;
-                      }
-                    },
-                  ),
+                  _buildHamburgerMenu(),
                   const SizedBox(width: 12),
-
-                  // Logo & Title
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -170,7 +84,6 @@ class VenusDashboard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
                   const Spacer(),
                 ],
               ),
@@ -184,17 +97,193 @@ class VenusDashboard extends StatelessWidget {
           children: [
             _buildWelcomeHeader(),
             const SizedBox(height: 24),
-            _buildRecruitmentMetrics(),
-            const SizedBox(height: 24),
-            _buildOperationalOverview(),
-            const SizedBox(height: 24),
-            _buildCrewManagement(),
-            const SizedBox(height: 24),
-            _buildBottomSection(),
+
+            if (_userRole.toUpperCase() == 'MA') ...[
+              _buildRecruitmentMetrics(),
+              const SizedBox(height: 24),
+              _buildOperationalOverview(),
+              const SizedBox(height: 24),
+              _buildCrewManagement(),
+              const SizedBox(height: 24),
+              _buildBottomSection(),
+              const SizedBox(height: 24),
+              _buildDefaultDashboard(),
+            ] else if (_userRole.toUpperCase() == 'APPLICANT') ...[
+              _buildApplicantDashboard(),
+            ] ,
+
             const SizedBox(height: 32),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHamburgerMenu() {
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.menu, color: Colors.black87, size: 24),
+      tooltip: 'Menu',
+      offset: const Offset(0, 50),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      itemBuilder: (context) {
+        List<PopupMenuEntry<String>> items = [
+          const PopupMenuItem(
+            value: 'dashboard',
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(Icons.dashboard_outlined, color: Color(0xFF1976D2)),
+              title: Text('Portal', style: TextStyle(fontSize: 14)),
+            ),
+          ),
+        ];
+
+        if (MenuConfig.shouldShowMenu('recruitment', _userRole)) {
+          items.add(
+            PopupMenuItem(
+              value: 'recruitment',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.person_add_alt_1_rounded, color: Color(0xFF5E35B1)),
+                title: const Text('Recruitment', style: TextStyle(fontSize: 14)),
+                trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+              ),
+            ),
+          );
+          items.addAll([
+            const PopupMenuItem(
+              value: 'divider',
+              enabled: false,
+              child: Divider(height: 1),
+            ),
+            const PopupMenuItem(
+              value: 'analytics',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(Icons.analytics_outlined, color: Color(0xFF1976D2)),
+                title: Text('Analytics', style: TextStyle(fontSize: 14)),
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'reports',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(Icons.assessment_outlined, color: Color(0xFFFB8C00)),
+                title: Text('Reports', style: TextStyle(fontSize: 14)),
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'divider2',
+              enabled: false,
+              child: Divider(height: 1),
+            ),
+            const PopupMenuItem(
+              value: 'settings',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(Icons.settings_outlined, color: Color(0xFF757575)),
+                title: Text('Settings', style: TextStyle(fontSize: 14)),
+              ),
+            ),
+          ]);
+
+        }
+
+        if (MenuConfig.shouldShowMenu('manning', _userRole)) {
+          items.add(
+            PopupMenuItem(
+              value: 'manning',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.people_rounded, color: Color(0xFF00897B)),
+                title: const Text('Manning', style: TextStyle(fontSize: 14)),
+                trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+              ),
+            ),
+          );
+
+        }
+
+        if (MenuConfig.shouldShowMenu('personal_data', _userRole)) {
+          items.add(
+            PopupMenuItem(
+              value: 'personal_data',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.person_outline_rounded, color: Color(0xFF1E88E5)),
+                title: const Text('Recruitment', style: TextStyle(fontSize: 14)),
+                trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+              ),
+            ),
+          );
+        }
+
+        items.addAll([
+          const PopupMenuItem(
+            value: 'logout',
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(Icons.logout_outlined, color: Color(0xFFE53935)),
+              title: Text('Logout', style: TextStyle(fontSize: 14)),
+            ),
+          ),
+        ]);
+
+        return items;
+      },
+      onSelected: (value) async {
+        switch (value) {
+          case 'dashboard':
+            Navigator.pushNamed(context, '/portal');
+            break;
+          case 'recruitment':
+            _showMenuBottomSheet(
+              context,
+              title: 'RECRUITMENT',
+              icon: Icons.person_add_alt_1_rounded,
+              sections: MenuConfig.getRecruitmentMenu(context),
+              primaryColor: const Color(0xFF5E35B1),
+              secondaryColor: const Color(0xFF4527A0),
+            );
+            break;
+          case 'manning':
+            _showMenuBottomSheet(
+              context,
+              title: 'MANNING',
+              icon: Icons.people_rounded,
+              sections: MenuConfig.getManningMenu(context),
+              primaryColor: const Color(0xFF00897B),
+              secondaryColor: const Color(0xFF00695C),
+            );
+            break;
+          case 'personal_data':
+            _showMenuBottomSheet(
+              context,
+              title: 'PERSONAL DATA',
+              icon: Icons.person_outline_rounded,
+              sections: MenuConfig.getPersonalDataMenu(context),
+              primaryColor: const Color(0xFF1E88E5),
+              secondaryColor: const Color(0xFF1565C0),
+            );
+            break;
+          case 'analytics':
+            Navigator.pushNamed(context, '/analytics');
+            break;
+          case 'reports':
+            Navigator.pushNamed(context, '/reports');
+            break;
+          case 'settings':
+            Navigator.pushNamed(context, '/settings');
+            break;
+          case 'logout':
+            await AuthService.logout();
+            if (mounted) {
+              Navigator.pushReplacementNamed(context, '/login');
+            }
+            break;
+        }
+      },
     );
   }
 
@@ -221,7 +310,6 @@ class VenusDashboard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Handle bar
             Container(
               margin: const EdgeInsets.only(top: 12, bottom: 8),
               width: 40,
@@ -231,8 +319,6 @@ class VenusDashboard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-
-            // Header dengan gradient
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -271,8 +357,6 @@ class VenusDashboard extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Menu Items dari MenuSection
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -293,6 +377,7 @@ class VenusDashboard extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildMenuSection(MenuSection section) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,6 +443,10 @@ class VenusDashboard extends StatelessWidget {
   }
 
   Widget _buildWelcomeHeader() {
+    String subtitle = _userRole.toUpperCase() == 'APPLICANT'
+        ? 'Track your application status and manage your profile'
+        : 'Here\'s what\'s happening with your crew management today';
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -375,14 +464,14 @@ class VenusDashboard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(20), // Kurangi padding
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10), // Kurangi padding
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
@@ -390,7 +479,7 @@ class VenusDashboard extends StatelessWidget {
                 child: const Icon(
                   Icons.waving_hand,
                   color: Colors.amber,
-                  size: 24, // Kurangi size
+                  size: 24,
                 ),
               ),
               const SizedBox(width: 12),
@@ -407,11 +496,11 @@ class VenusDashboard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
-                      'Christian Indrayana',
-                      style: TextStyle(
+                    Text(
+                      _userName,
+                      style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 20, // Kurangi dari 24
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         height: 1.2,
                       ),
@@ -425,7 +514,7 @@ class VenusDashboard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Here\'s what\'s happening with your crew management today',
+            subtitle,
             style: TextStyle(
               color: Colors.white.withOpacity(0.8),
               fontSize: 13,
@@ -433,16 +522,19 @@ class VenusDashboard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _buildStatCard('3,277', 'Total Crew', Icons.groups),
-              const SizedBox(width: 8),
-              _buildStatCard('1,723', 'On Schedule', Icons.schedule),
-              const SizedBox(width: 8),
-              _buildStatCard('2,573', 'Active', Icons.check_circle),
-            ],
-          ),
+
+          if (_userRole.toUpperCase() == 'MA') ...[
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                _buildStatCard('3,277', 'Total Crew', Icons.groups),
+                const SizedBox(width: 8),
+                _buildStatCard('1,723', 'On Schedule', Icons.schedule),
+                const SizedBox(width: 8),
+                _buildStatCard('2,573', 'Active', Icons.check_circle),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -459,7 +551,7 @@ class VenusDashboard extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center, // Center alignment
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(icon, color: Colors.white, size: 20),
             const SizedBox(height: 8),
@@ -469,7 +561,7 @@ class VenusDashboard extends StatelessWidget {
                 value,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 18, // Kurangi dari 24
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -480,7 +572,7 @@ class VenusDashboard extends StatelessWidget {
               label,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.8),
-                fontSize: 10, // Kurangi dari 12
+                fontSize: 10,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
@@ -493,6 +585,229 @@ class VenusDashboard extends StatelessWidget {
     );
   }
 
+  // APPLICANT DASHBOARD
+  Widget _buildApplicantDashboard() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          _buildApplicantProfileCard(),
+          const SizedBox(height: 16),
+          _buildApplicationStatusCard(),
+          const SizedBox(height: 16),
+          _buildQuickLinksCard(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildApplicantProfileCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          const CircleAvatar(
+            radius: 50,
+            backgroundColor: Color(0xFF1E88E5),
+            child: Icon(Icons.person, size: 50, color: Colors.white),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _userName,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1A237E),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E88E5).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              'Applicant',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1E88E5),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildApplicationStatusCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Application Status',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1A237E),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _buildStatusItem('Pending Review', Icons.schedule, const Color(0xFFFB8C00)),
+          _buildStatusItem('Documents to Upload', Icons.upload_file, const Color(0xFF1E88E5)),
+          _buildStatusItem('Next Interview', Icons.event, const Color(0xFF5E35B1)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusItem(String title, IconData icon, Color color) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F7FA),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF1A237E),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickLinksCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Quick Links',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1A237E),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildQuickLinkItem('Update Profile', Icons.person_outline),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickLinkItem(String title, IconData icon) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Icon(icon, color: const Color(0xFF1E88E5), size: 20),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF1A237E),
+                  ),
+                ),
+                const Spacer(),
+                Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultDashboard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(Icons.info_outline, size: 80, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'Dashboard content for your role\nwill be displayed here',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // MA DASHBOARD SECTIONS
   Widget _buildRecruitmentMetrics() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -527,7 +842,7 @@ class VenusDashboard extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 0.95, // Disesuaikan agar lebih proporsional
+            childAspectRatio: 0.95,
             children: [
               _buildMetricCard('304', 'New Applicant', Icons.person_add_alt_1, const Color(0xFF1E88E5)),
               _buildMetricCard('2', 'Waiting Agency Review', Icons.assignment, const Color(0xFF5E35B1)),
@@ -1081,7 +1396,7 @@ class VenusDashboard extends StatelessWidget {
         children: [
           _buildRecentActivity(),
           const SizedBox(height: 20),
-          _buildQuickActions(),
+          _buildQuickActionsMA(),
           const SizedBox(height: 20),
           _buildUpcomingEvents(),
         ],
@@ -1185,7 +1500,7 @@ class VenusDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions() {
+  Widget _buildQuickActionsMA() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
