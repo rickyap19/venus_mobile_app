@@ -179,6 +179,8 @@ class MenuConfig {
         return getPersonalDataMenu(context);
       case 'MA': // Manning Agent
         return getRecruitmentMenu(context) + getManningMenu(context);
+      case 'ADMIN': // Manning Agent
+        return getRecruitmentMenu(context) + getManningMenu(context);
       default:
         return []; // Atau menu default lainnya
     }
@@ -190,13 +192,13 @@ class MenuConfig {
 
     switch (menuType) {
       case 'recruitment':
-        return role == 'MA';
+        return role == 'MA' || role == 'ADMIN';
       case 'manning':
-        return role == 'MA';
+        return role == 'MA' || role == 'ADMIN';
       case 'personal_data':
         return role == 'APPLICANT';
       case 'dashboard':
-        return role == 'MA';
+        return role == 'MA' || role == 'ADMIN';
       default:
         return false;
     }

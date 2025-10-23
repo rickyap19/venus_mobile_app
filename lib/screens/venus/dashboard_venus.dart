@@ -98,7 +98,7 @@ class _VenusDashboardState extends State<VenusDashboard> {
             _buildWelcomeHeader(),
             const SizedBox(height: 24),
 
-            if (_userRole.toUpperCase() == 'MA') ...[
+            if (_userRole.toUpperCase() == 'MA' || _userRole.toUpperCase() == 'ADMIN') ...[
               _buildRecruitmentMetrics(),
               const SizedBox(height: 24),
               _buildOperationalOverview(),
@@ -151,6 +151,21 @@ class _VenusDashboardState extends State<VenusDashboard> {
               ),
             ),
           );
+
+        }
+
+        if (MenuConfig.shouldShowMenu('manning', _userRole)) {
+          items.add(
+            PopupMenuItem(
+              value: 'manning',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.people_rounded, color: Color(0xFF00897B)),
+                title: const Text('Manning', style: TextStyle(fontSize: 14)),
+                trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+              ),
+            ),
+          );
           items.addAll([
             const PopupMenuItem(
               value: 'divider',
@@ -187,21 +202,6 @@ class _VenusDashboardState extends State<VenusDashboard> {
               ),
             ),
           ]);
-
-        }
-
-        if (MenuConfig.shouldShowMenu('manning', _userRole)) {
-          items.add(
-            PopupMenuItem(
-              value: 'manning',
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.people_rounded, color: Color(0xFF00897B)),
-                title: const Text('Manning', style: TextStyle(fontSize: 14)),
-                trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
-              ),
-            ),
-          );
 
         }
 
@@ -523,7 +523,7 @@ class _VenusDashboardState extends State<VenusDashboard> {
             overflow: TextOverflow.ellipsis,
           ),
 
-          if (_userRole.toUpperCase() == 'MA') ...[
+          if (_userRole.toUpperCase() == 'MA' || _userRole.toUpperCase() == 'ADMIN') ...[
             const SizedBox(height: 16),
             Row(
               children: [
@@ -591,63 +591,10 @@ class _VenusDashboardState extends State<VenusDashboard> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          _buildApplicantProfileCard(),
-          const SizedBox(height: 16),
+
           _buildApplicationStatusCard(),
           const SizedBox(height: 16),
           _buildQuickLinksCard(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildApplicantProfileCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundColor: Color(0xFF1E88E5),
-            child: Icon(Icons.person, size: 50, color: Colors.white),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _userName,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1A237E),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E88E5).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              'Applicant',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1E88E5),
-              ),
-            ),
-          ),
         ],
       ),
     );
