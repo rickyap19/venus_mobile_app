@@ -183,7 +183,7 @@ class PortalPage extends StatelessWidget {
       childAspectRatio: 0.9,
       children: [
         AppCard(
-          title: 'Venus',
+          title: 'CREWING',
           subtitle: 'Crew Management System',
           icon: Icons.people_alt_rounded,
           color: const Color(0xFF7B68EE),

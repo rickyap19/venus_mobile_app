@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/venus/personal_data_screen_2.dart';
 import 'screens/venus/dashboard_venus.dart';
 import 'screens/login_page.dart';
 import 'screens/portal_page.dart';
@@ -24,6 +25,7 @@ class PISManagementApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/portal': (context) => const PortalPage(),
         '/venus': (context) => const VenusDashboard(),
+        '/personal-data': (context) => const PersonalDataScreen(),
       },
     );
   }

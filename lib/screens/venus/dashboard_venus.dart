@@ -218,6 +218,19 @@ class _VenusDashboardState extends State<VenusDashboard> {
             ),
           );
         }
+        if (MenuConfig.shouldShowMenu('user_management', _userRole)) {
+          items.add(
+            PopupMenuItem(
+              value: 'user_management',
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.person_outline_rounded, color: Color(0xFF1E88E5)),
+                title: const Text('User Management', style: TextStyle(fontSize: 14)),
+                trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+              ),
+            ),
+          );
+        }
 
         items.addAll([
           const PopupMenuItem(
@@ -263,6 +276,16 @@ class _VenusDashboardState extends State<VenusDashboard> {
               title: 'PERSONAL DATA',
               icon: Icons.person_outline_rounded,
               sections: MenuConfig.getPersonalDataMenu(context),
+              primaryColor: const Color(0xFF1E88E5),
+              secondaryColor: const Color(0xFF1565C0),
+            );
+            break;
+          case 'user_management':
+            _showMenuBottomSheet(
+              context,
+              title: 'User Management',
+              icon: Icons.person_outline_rounded,
+              sections: MenuConfig.getUserManagementMenu(context),
               primaryColor: const Color(0xFF1E88E5),
               secondaryColor: const Color(0xFF1565C0),
             );

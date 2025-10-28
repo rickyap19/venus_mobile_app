@@ -134,12 +134,27 @@ class MenuConfig {
             title: 'Personal Data',
             icon: Icons.person_outline_rounded,
             color: const Color(0xFF1E88E5),
-            onTap: () => Navigator.pushNamed(context, '/personal-info'),
+            onTap: () => Navigator.pushNamed(context, '/personal-data'),
+          ),
+        ],
+      ),
+
+    ];
+  }
+  static List<MenuSection> getUserManagementMenu(BuildContext context) {
+    return [
+      MenuSection(
+        title: 'User Management',
+        items: [
+          MenuItem(
+            title: 'User',
+            icon: Icons.dashboard_rounded,
+            color: const Color(0xFF1E88E5),
+            onTap: () => Navigator.pushNamed(context, '/user-management'),
           ),
 
         ],
       ),
-
     ];
   }
 
@@ -180,7 +195,7 @@ class MenuConfig {
       case 'MA': // Manning Agent
         return getRecruitmentMenu(context) + getManningMenu(context);
       case 'ADMIN': // Manning Agent
-        return getRecruitmentMenu(context) + getManningMenu(context);
+        return getRecruitmentMenu(context) + getManningMenu(context) + getUserManagementMenu(context);
       default:
         return []; // Atau menu default lainnya
     }
@@ -197,6 +212,8 @@ class MenuConfig {
         return role == 'MA' || role == 'ADMIN';
       case 'personal_data':
         return role == 'APPLICANT';
+      case 'user_management':
+        return role == 'ADMIN';
       case 'dashboard':
         return role == 'MA' || role == 'ADMIN';
       default:
